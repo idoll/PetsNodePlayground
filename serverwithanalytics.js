@@ -1,6 +1,7 @@
 var express = require('express'),
     path = require('path'),
     http = require('http'),
+    io = require('socket.io'),
     wine = require('./routes/wines');
 
 var app = express();
@@ -8,12 +9,12 @@ var app = express();
 app.configure(function () {
     app.set('port', process.env.PORT || 3000);
     app.use(express.logger('dev'));
-    app.use(express.bodyParser())
+    app.use(express.bodyParser());
     app.use(express.static(path.join(__dirname, 'public')));
 });
 
 var server = http.createServer(app);
-io = require('socket.io').listen(server);
+io = io.listen(server);
 
 
 io.configure(function () {
