@@ -1,7 +1,6 @@
 var express = require('express'),
     path = require('path'),
     http = require('http'),
-    io = require('socket.io'),
     wine = require('./routes/wines');
 
 var app = express();
@@ -14,7 +13,7 @@ app.configure(function () {
 });
 
 var server = http.createServer(app);
-io = io.listen(server);
+io = require('socket.io').listen(server);
 
 
 io.configure(function () {
