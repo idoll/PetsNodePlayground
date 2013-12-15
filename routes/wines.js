@@ -1,28 +1,41 @@
-var mongo = require('mongodb');
+var mongo = require('mongodatabase');
 
 var Server = mongo.Server,
-    Db = mongo.Db,
+    database = mongo.database,
     BSON = mongo.BSONPure;
 
-var server = new Server('ds061228.mongolab.com', 61228, {auto_reconnect: true});
-db = new Db('winedb', server, {safe: true});
+var uristring = process.env.MONGOLAB_URI || localhost;
 
-db.open(function(err, db) {
+//var server = new Server('ds061228.mongolab.com', 61228, {auto_reconnect: true});
+database = null //new database('winedatabase', server, {safe: true});
+
+mongo.connect(uristring, {}, function(error, db){
+	console.log("connected, database: " + db);
+
+    database = db;
+
+    database.addListener("error", function(error){
+     console.log("Error connecting to MongoLab");
+
+    });
+});
+
+database.open(function(err, database) {
     if(!err) {
-        console.log("Connected to 'winedb' database");
-        db.collection('wines', {safe:true}, function(err, collection) {
+        console.log("Connected to 'winedatabase' database");
+        database.collection('wines', {safe:true}, function(err, collection) {
             if (err) {
                 console.log("The 'wines' collection doesn't exist. Creating it with sample data...");
-                populateDB();
+                populatedatabase();
             }
         });
     }
 });
 
-exports.findById = function(req, res) {
+exports.findatabaseyId = function(req, res) {
     var id = req.params.id;
     console.log('Retrieving wine: ' + id);
-    db.collection('wines', function(err, collection) {
+    database.collection('wines', function(err, collection) {
         collection.findOne({'_id':new BSON.ObjectID(id)}, function(err, item) {
             res.send(item);
         });
@@ -30,7 +43,7 @@ exports.findById = function(req, res) {
 };
 
 exports.findAll = function(req, res) {
-    db.collection('wines', function(err, collection) {
+    database.collection('wines', function(err, collection) {
         collection.find().toArray(function(err, items) {
             res.send(items);
         });
@@ -40,7 +53,7 @@ exports.findAll = function(req, res) {
 exports.addWine = function(req, res) {
     var wine = req.body;
     console.log('Adding wine: ' + JSON.stringify(wine));
-    db.collection('wines', function(err, collection) {
+    database.collection('wines', function(err, collection) {
         collection.insert(wine, {safe:true}, function(err, result) {
             if (err) {
                 res.send({'error':'An error has occurred'});
@@ -58,7 +71,7 @@ exports.updateWine = function(req, res) {
     delete wine._id;
     console.log('Updating wine: ' + id);
     console.log(JSON.stringify(wine));
-    db.collection('wines', function(err, collection) {
+    database.collection('wines', function(err, collection) {
         collection.update({'_id':new BSON.ObjectID(id)}, wine, {safe:true}, function(err, result) {
             if (err) {
                 console.log('Error updating wine: ' + err);
@@ -74,7 +87,7 @@ exports.updateWine = function(req, res) {
 exports.deleteWine = function(req, res) {
     var id = req.params.id;
     console.log('Deleting wine: ' + id);
-    db.collection('wines', function(err, collection) {
+    database.collection('wines', function(err, collection) {
         collection.remove({'_id':new BSON.ObjectID(id)}, {safe:true}, function(err, result) {
             if (err) {
                 res.send({'error':'An error has occurred - ' + err});
@@ -89,7 +102,7 @@ exports.deleteWine = function(req, res) {
 /*--------------------------------------------------------------------------------------------------------------------*/
 // Populate database with sample data -- Only used once: the first time the application is started.
 // You'd typically not find this code in a real-life app, since the database would already exist.
-var populateDB = function() {
+var populatedatabase = function() {
 
     var wines = [
     {
@@ -309,7 +322,7 @@ var populateDB = function() {
         picture: "waterbrook.jpg"
     }];
 
-    db.collection('wines', function(err, collection) {
+    database.collection('wines', function(err, collection) {
         collection.insert(wines, {safe:true}, function(err, result) {});
     });
 
