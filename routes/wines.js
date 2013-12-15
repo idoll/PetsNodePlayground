@@ -4,22 +4,10 @@ var Server = mongo.Server,
     Db = mongo.Db,
     BSON = mongo.BSONPure;
 
-var uri = process.env.MONGOLAB_URI;
-/*var server = new Server(uri, 61228, {auto_reconnect: true});
+var server = new Server('ds061228.mongolab.com', 61228, {auto_reconnect: true});
+db = new Db('winedb', server, {safe: true});
 
-db = new Db('winedb', server, {safe: true});*/
-mongo.Db.connect(uri, function(err, db){
-	 if(!err) {
-        console.log("Connected to 'winedb' database");
-        db.collection('wines', {safe:true}, function(err, collection) {
-            if (err) {
-                console.log("The 'wines' collection doesn't exist. Creating it with sample data...");
-                populateDB();
-            }
-        });
-    }
-});
-/*db.open(function(err, db) {
+db.open(function(err, db) {
     if(!err) {
         console.log("Connected to 'winedb' database");
         db.collection('wines', {safe:true}, function(err, collection) {
@@ -29,7 +17,7 @@ mongo.Db.connect(uri, function(err, db){
             }
         });
     }
-});*/
+});
 
 exports.findById = function(req, res) {
     var id = req.params.id;
