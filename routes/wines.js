@@ -7,21 +7,8 @@ var mongoUri = process.env.MONGOLAB_URI;
 
 mongo.Db.connect(mongoUri, function (err, DB) {
     db = DB;
-	populateDB();
+	//populateDB();
 });
-
-
-/*db.open(function(err, db) {
-    if(!err) {
-        console.log("Connected to 'winedb' database");
-        db.collection('wines', {safe:true}, function(err, collection) {
-            if (err) {
-                console.log("The 'wines' collection doesn't exist. Creating it with sample data...");
-                populateDB();
-            }
-        });
-    }
-});*/
 
 exports.findById = function(req, res) {
     var id = req.params.id;
