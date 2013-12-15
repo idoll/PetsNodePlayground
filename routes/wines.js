@@ -31,7 +31,7 @@ var Wines = mongoose.model('winedb');
 
 
 
-exports.findatabaseId = function(req, res) {
+exports.findById = function(req, res) {
     var id = req.params.id;
 	console.log('Retrieving wine: ' + id);her
 	Wines.find({id:id}, function (err, wines) {
