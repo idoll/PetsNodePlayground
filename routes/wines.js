@@ -33,7 +33,7 @@ populatedatabase();
 
 exports.findatabaseyId = function(req, res) {
     var id = req.params.id;
-	console.log('Retrieving wine: ' + id);
+	console.log('Retrieving wine: ' + id);her
 	Wines.find({id:id}, function (err, wines) {
 		if (!err) {
 		  res.send(wines);
@@ -105,7 +105,7 @@ exports.deleteWine = function(req, res) {
 /*--------------------------------------------------------------------------------------------------------------------*/
 // Populate database with sample data -- Only used once: the first time the application is started.
 // You'd typically not find this code in a real-life app, since the database would already exist.
-var populatedatabase = function() {
+function populatedatabase(){
 
     var wines = [
     {
