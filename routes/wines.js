@@ -1,13 +1,13 @@
+var connect = require('connect');
 var mongo = require('mongodb');
 
 var Server = mongo.Server,
-    database = mongo.database,
     BSON = mongo.BSONPure;
 
 var uristring = process.env.MONGOLAB_URI || localhost;
 
 //var server = new Server('ds061228.mongolab.com', 61228, {auto_reconnect: true});
-database = null //new database('winedatabase', server, {safe: true});
+var database = null //new database('winedatabase', server, {safe: true});
 
 mongo.connect(uristring, {}, function(error, db){
 	console.log("connected, database: " + db);
