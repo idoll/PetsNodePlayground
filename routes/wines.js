@@ -27,11 +27,11 @@ mongoose.connect(uristring, function (err, res) {
 });
 
 var Wines = mongoose.model('winedb');
-populatedatabase();
+/*populatedatabase();*/
 
 
 
-exports.findatabaseyId = function(req, res) {
+exports.findatabaseId = function(req, res) {
     var id = req.params.id;
 	console.log('Retrieving wine: ' + id);her
 	Wines.find({id:id}, function (err, wines) {
