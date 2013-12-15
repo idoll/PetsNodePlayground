@@ -1,56 +1,59 @@
-var connect = require('connect');
+var mongoose = require('mongoose');
 var mongo = require('mongodb');
 
 var Server = mongo.Server,
     BSON = mongo.BSONPure;
 
 var uristring = process.env.MONGOLAB_URI || localhost;
+		
+var wineSchema = new mongoose.Schema({
+		  name:  String,
+		  year: Number,
+		  grapes: String,
+		  id: Number,
+		  country: String,
+		  region: String,
+		  description: String,
+		  picture: String
+		 });
+module.exports = mongoose.model('winedb', wineSchema);
 
-//var server = new Server('ds061228.mongolab.com', 61228, {auto_reconnect: true});
-var database = null //new database('winedatabase', server, {safe: true});
-
-mongo.connect(uristring, {}, function(error, db){
-	console.log("connected, database: " + db);
-
-    database = db;
-
-    database.addListener("error", function(error){
-     console.log("Error connecting to MongoLab");
-
-    });
+mongoose.connect(uristring, function (err, res) {
+  if (err) { 
+  console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+  } else {
+  console.log ('Succeeded connected to: ' + uristring);
+  }
 });
 
-database.open(function(err, database) {
-    if(!err) {
-        console.log("Connected to 'winedatabase' database");
-        database.collection('wines', {safe:true}, function(err, collection) {
-            if (err) {
-                console.log("The 'wines' collection doesn't exist. Creating it with sample data...");
-                populatedatabase();
-            }
-        });
-    }
-});
+var Wines = mongoose.model('winedb');
+populatedatabase();
+
+
 
 exports.findatabaseyId = function(req, res) {
     var id = req.params.id;
-    console.log('Retrieving wine: ' + id);
-    database.collection('wines', function(err, collection) {
-        collection.findOne({'_id':new BSON.ObjectID(id)}, function(err, item) {
-            res.send(item);
-        });
-    });
+	console.log('Retrieving wine: ' + id);
+	Wines.find({id:id}, function (err, wines) {
+		if (!err) {
+		  res.send(wines);
+		} else {
+		  console.log(err);
+		}
+	});
 };
 
 exports.findAll = function(req, res) {
-    database.collection('wines', function(err, collection) {
-        collection.find().toArray(function(err, items) {
-            res.send(items);
-        });
-    });
+    Wines.find(function (err, wines) {
+		if (!err) {
+			res.send(wines);
+		} else {
+			console.log(err);
+		}
+	});
 };
 
-exports.addWine = function(req, res) {
+/*exports.addWine = function(req, res) {
     var wine = req.body;
     console.log('Adding wine: ' + JSON.stringify(wine));
     database.collection('wines', function(err, collection) {
@@ -97,7 +100,7 @@ exports.deleteWine = function(req, res) {
             }
         });
     });
-}
+}*/
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 // Populate database with sample data -- Only used once: the first time the application is started.
@@ -322,8 +325,5 @@ var populatedatabase = function() {
         picture: "waterbrook.jpg"
     }];
 
-    database.collection('wines', function(err, collection) {
-        collection.insert(wines, {safe:true}, function(err, result) {});
-    });
-
+    Wines.collection.insert(wines, {}, function(err, result) {});
 };
