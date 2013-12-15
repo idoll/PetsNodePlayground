@@ -6,8 +6,8 @@ var db = mongo.Db,
 var mongoUri = process.env.MONGOLAB_URI;
 
 mongo.Db.connect(mongoUri, function (err, DB) {
-  populateDB();
-  db = DB;
+    db = DB;
+	populateDB();
 });
 
 
